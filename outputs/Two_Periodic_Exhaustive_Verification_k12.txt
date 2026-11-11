@@ -1,0 +1,52 @@
+== Part 1: GF(64) sharp optimum ==
+alpha=7 (t^2+t+1), beta=51, b=6, D=30
+m=29: 57 directions, 57 distinct; encodable (odd m): True
+m=30 with same parameters: 58 distinct of 59
+residue pairs with 59 distinct exponents at m=30: 13
+  [(2, 29), (2, 30), (2, 31), (2, 32), (2, 33), (4, 29), (4, 30), (4, 31), (6, 29), (59, 34), (61, 32), (61, 33), (61, 34)]
+  all gcd(Phi_63, F_(b,D)) == 1: True
+  Phi_63 vanishes at 36/36 primitive elements
+all-positions model, N=29: directions distinct, last two columns independent: True  -> 27 information symbols
+
+== Part 2: fixed parameters of Beaugris (2025) ==
+alpha=t, beta=alpha^2: D=57; largest separated length M=6
+  V_6 = [0, 1, 2, 3, 4, 5], E_6 = [58, 59, 60, 61, 62]
+
+== Part 3: explicit encoding, decoding and DNA representation ==
+S0=5, S1=5, checks c30=23, c31=62, full syndrome=(0,0)
+substitution (magnitude 17, position 5): syndrome (17, 28), decoded ('sub', 5, 5), ok=True
+swap (positions 28,29): syndrome (50, 58), decoded ('swap', 28, 58), ok=True
+information codons : aac aag aat aca acc acg act aga agc agg agt ata atc atg att caa cac cag cat cca ccc ccg cct cga cgc cgg cgt cta ctc
+check codons       : cct ttg
+strand length      : 93 nucleotides
+codon 5 after the substitution: acc -> cca
+codons 28, 29: cta ctc
+
+== Part 4: exhaustive optima (Tables 1 and 2) ==
+ k     q   m_max   m_max_all
+ 2     4       2           0
+ 3     8       3           0
+ 4    16       5           3
+ 5    32      14          12
+ 6    64      29          27
+ 7   128      61          59
+ 8   256     122         120
+ 9   512     250         248
+10  1024     508         506
+11  2048    1019        1017
+12  4096    2033        2031
+Proposition 5.9 (m_max^all = m_max - 2 for k >= 4): confirmed
+
+== Part 5: criterion vs brute-force syndrome injectivity ==
+k=3: 108 codes tested, 0 mismatches
+k=4: 784 codes tested, 0 mismatches
+k=5: 13500 codes tested, 0 mismatches
+
+== Part 6: condition 3J(q) <= q/2 - 2 ==
+[(26, False), (27, False), (28, False), (29, True), (30, True), (31, True), (32, True)]
+
+== Part 7: Jacobi-sum expansion (30) ==
+k=4: max |formula - T| over random A, B = 5.33e-15
+k=5: max |formula - T| over random A, B = 1.41e-14
+k=6: max |formula - T| over random A, B = 4.39e-14
+Elapsed: 96.28 seconds

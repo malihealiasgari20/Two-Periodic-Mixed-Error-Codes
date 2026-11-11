@@ -1,0 +1,15 @@
+cff-version: 1.2.0
+message: "If you use these verification programs, please cite the software archive and the associated research paper."
+type: software
+title: "Verification Programs for Two-Periodic Mixed-Error Codes over Finite Fields"
+authors:
+  - family-names: Aliasgari
+    given-names: Malihe
+version: 1.0.0
+license: MIT
+keywords:
+  - coding theory
+  - finite fields
+  - adjacent transpositions
+  - syndrome decoding
+  - computational verification

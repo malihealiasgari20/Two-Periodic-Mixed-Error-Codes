@@ -1,0 +1,18 @@
+k= 2, q=      4, m_max=      2, deficit=  0, primitive_poly=0x7, alpha=2, beta=3, b=2, D=1
+k= 3, q=      8, m_max=      3, deficit=  1, primitive_poly=0xb, alpha=2, beta=6, b=4, D=5
+k= 4, q=     16, m_max=      5, deficit=  3, primitive_poly=0x13, alpha=2, beta=12, b=6, D=6
+k= 5, q=     32, m_max=     14, deficit=  2, primitive_poly=0x25, alpha=2, beta=4, b=2, D=13
+k= 6, q=     64, m_max=     29, deficit=  3, primitive_poly=0x43, alpha=35, beta=57, b=57, D=34
+k= 7, q=    128, m_max=     61, deficit=  3, primitive_poly=0x83, alpha=8, beta=96, b=4, D=64
+k= 8, q=    256, m_max=    122, deficit=  6, primitive_poly=0x11d, alpha=74, beta=137, b=2, D=133
+k= 9, q=    512, m_max=    250, deficit=  6, primitive_poly=0x211, alpha=226, beta=356, b=4, D=259
+k=10, q=   1024, m_max=    508, deficit=  4, primitive_poly=0x409, alpha=642, beta=811, b=6, D=507
+k=11, q=   2048, m_max=   1019, deficit=  5, primitive_poly=0x805, alpha=2, beta=513, b=2045, D=1020
+k=12, q=   4096, m_max=   2033, deficit= 15, primitive_poly=0x1053, alpha=2956, beta=52, b=4093, D=2034
+k=13, q=   8192, m_max=   4090, deficit=  6, primitive_poly=0x201b, alpha=3328, beta=2091, b=6, D=4089
+k=14, q=  16384, m_max=   8186, deficit=  6, primitive_poly=0x402b, alpha=7167, beta=15581, b=12, D=8187
+k=15, q=  32768, m_max=  16373, deficit= 11, primitive_poly=0x8003, alpha=3855, beta=14836, b=32745, D=16394
+k=16, q=  65536, m_max=  32757, deficit= 11, primitive_poly=0x1002d, alpha=15154, beta=39321, b=65523, D=32768
+k=17, q= 131072, m_max=  65528, deficit=  8, primitive_poly=0x20009, alpha=128, beta=18720, b=8, D=65537
+k=18, q= 262144, m_max= 131066, deficit=  6, primitive_poly=0x40027, alpha=221272, beta=224918, b=10, D=131069
+Elapsed: 18.62 seconds

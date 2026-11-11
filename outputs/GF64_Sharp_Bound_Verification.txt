@@ -1,0 +1,14 @@
+All combinatorial candidates for m=30: [(2, 29), (2, 30), (2, 31), (2, 32), (2, 33), (4, 29), (4, 30), (4, 31), (6, 29), (59, 34), (61, 32), (61, 33), (61, 34)]
+Candidate count: 13
+All 13 cyclotomic gcds equal 1: NO primitive alpha can reach m=30.
+Primitive alpha values: 36
+Primitive-alpha / beta != 1 parameter pairs evaluated: 2232
+Maximum m across all pairs: 29
+Number of maximizing parameter pairs: 12
+Explicit maximizing example: alpha=7, beta=alpha^6=51, b=6, D=30
+Finite-field representation: GF(2)[x]/(x^6+x+1); alpha=x^2+x+1
+The minimal polynomial of alpha is x^6+x^4+x^3+x+1.
+29 information symbols + 2 check symbols: success (odd m).
+28 information symbols + 2 check symbols: success (even m).
+30 information symbols + 2 check symbols: impossible in this family.
+Elapsed: 1.03 seconds
