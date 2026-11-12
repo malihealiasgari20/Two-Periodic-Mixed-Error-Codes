@@ -114,6 +114,20 @@ Zenodo can archive the published release and assign a DOI. Once a DOI has actual
 
 See [`CITATION.cff`](CITATION.cff) for software-citation metadata.
 
+
+### Archived Software Release
+
+**Version:** v1.0
+
+**Zenodo DOI:** https://doi.org/10.5281/zenodo.24170395
+
+**GitHub Release:** https://github.com/malihealiasgari20/Two-Periodic-Mixed-Error-Codes/releases/tag/v1.0
+
+The archived release contains the Python verification programs, computational results, and supporting scientific figures accompanying the manuscript "Adjacent-Transposition Syndromes and Sharp Length Bounds for Two-Periodic Mixed-Error Codes over Finite Fields."
+
+Verification software developed by Malihe Aliasgari. Repository presented by Malihe Aliasgari and Yousef Nejatbakhsh.
+
+
 ## License
 
 MIT License; see [`LICENSE`](LICENSE).
