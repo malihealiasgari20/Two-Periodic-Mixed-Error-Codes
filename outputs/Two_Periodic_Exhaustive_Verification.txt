@@ -1,3 +1,12 @@
+
+== Part 0: GF(7) example (Appendix A) ==
+codeword (1, 2, 4, 6, 1, 3): syndromes (0, 0)
+swap at i=1: r=(2, 1, 4, 6, 1, 3), (e,f)=(6,1), (L,R)=(4,4), locator solutions [1]
+swap at i=2: r=(1, 4, 2, 6, 1, 3), (e,f)=(2,6), (L,R)=(4,4), locator solutions [2]
+swap at i=3: r=(1, 2, 6, 4, 1, 3), (e,f)=(5,4), (L,R)=(2,2), locator solutions [3]
+characteristic-two formula at i=2: 6 vs 5 (fails: True)
+collision: syn(a')=(0, 0), syn(b')=(0, 0), syn(r')=(6, 1); order of -3 mod 7 = 3
+
 == Part 1: GF(64) sharp optimum ==
 alpha=7 (t^2+t+1), beta=51, b=6, D=30
 m=29: 57 directions, 57 distinct; encodable (odd m): True
@@ -11,11 +20,13 @@ all-positions model, N=29: directions distinct, last two columns independent: Tr
 == Part 2: fixed parameters of Beaugris (2025) ==
 alpha=t, beta=alpha^2: D=57; largest separated length M=6
   V_6 = [0, 1, 2, 3, 4, 5], E_6 = [58, 59, 60, 61, 62]
+alpha=t kept, beta=alpha^b optimized: max m = 22, attained for b in [8]
 
 == Part 3: explicit encoding, decoding and DNA representation ==
 S0=5, S1=5, checks c30=23, c31=62, full syndrome=(0,0)
 substitution (magnitude 17, position 5): syndrome (17, 28), decoded ('sub', 5, 5), ok=True
 swap (positions 28,29): syndrome (50, 58), decoded ('swap', 28, 58), ok=True
+decoder on 20000 random words: {'none': 5, 'detected': 10990, 'corrected': 9005} (every output passed the re-check)
 information codons : aac aag aat aca acc acg act aga agc agg agt ata atc atg att caa cac cag cat cca ccc ccg cct cga cgc cgg cgt cta ctc
 check codons       : cct ttg
 strand length      : 93 nucleotides
@@ -47,4 +58,3 @@ k=5: 13500 codes tested, 0 mismatches
 k=4: max |formula - T| over random A, B = 5.33e-15
 k=5: max |formula - T| over random A, B = 1.41e-14
 k=6: max |formula - T| over random A, B = 4.39e-14
-Elapsed: 10.25 seconds
