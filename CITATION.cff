@@ -7,6 +7,9 @@ authors:
   - family-names: Aliasgari
     given-names: Malihe
 version: 1.0
+
+doi: 10.5281/zenodo.24170395
+
 repository-code: "https://github.com/malihealiasgari20/Two-Periodic-Mixed-Error-Codes"
 license: MIT
 keywords:
