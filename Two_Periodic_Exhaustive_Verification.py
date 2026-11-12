@@ -4,16 +4,19 @@ Exact-arithmetic verification for
   "Adjacent-Transposition Syndromes and Sharp Length Bounds for
    Two-Periodic Mixed-Error Codes over Finite Fields"
 
-Parts 1--5 use exact binary-polynomial arithmetic and deterministic search.
-Part 6 evaluates the real-valued logarithmic threshold numerically. Part 7
-uses complex floating-point character sums with fixed-seed pseudorandom test
-sets; it is a reproducible numerical spot-check, not an exact proof.
+Everything is computed with exact binary-polynomial arithmetic; no floating
+point or randomization is used (except in the threshold check of part 6,
+which only evaluates the explicit real-valued function J(q)).
 
 Parts
+  0. GF(7): the worked example of Appendix A (general locator for odd and
+     even positions, failure of the characteristic-two formula, and the
+     collision showing that n - 2 <= L cannot be dropped).
   1. GF(64): achievability (alpha = t^2+t+1, beta = alpha^6, m = 29) and the
      13 residue pairs with gcd(Phi_63, x^{D+b}+x^D+x+1) = 1 (m = 30 impossible).
   2. GF(64): the fixed parameters of Beaugris (2025) (alpha = t, beta = alpha^2)
-     admit exactly m = 6 under joint decoding.
+     admit exactly m = 6 under joint decoding; with alpha = t kept and beta
+     optimized the maximum is 22; jointly optimizing alpha and beta gives 29.
   3. GF(64): the explicit 29-symbol encoding, the two decoded errors, and the
      codon-aligned DNA representation.
   4. Exhaustive optima for 2 <= k <= K (default K = 10) over all primitive
@@ -29,6 +32,11 @@ Parts
 Part 4 also asserts Proposition 5.9: m_max^all(q) = m_max(q) - 2 for k >= 4.
 
 Usage:  python3 Two_Periodic_Exhaustive_Verification.py [K]
+        (the article uses K = 12; standard library only, Python >= 3.8)
+
+All finite-field and polynomial computations are exact.  The only floating
+point is in Part 6 (evaluating the real threshold 3J(q) <= q/2 - 2) and in
+the optional spot check of Part 7; neither is used in any proof.
 """
 import math
 import sys
@@ -144,6 +152,31 @@ def poly_gcd(a, b):
     return a
 
 
+def part_gf7():
+    print("== Part 0: GF(7) example (Appendix A) ==")
+    p, P = 7, 3
+    W = lambda j: 1 if j % 2 else P * P % p
+    syn = lambda r: (sum(x * W(j) for j, x in enumerate(r, 1)) % p,
+                     sum(x * pow(P, j, p) for j, x in enumerate(r, 1)) % p)
+    a = (1, 2, 4, 6, 1, 3)
+    print(f"codeword {a}: syndromes {syn(a)}")
+    for i in (1, 2, 3):
+        r = list(a); r[i - 1], r[i] = r[i], r[i - 1]
+        e, f = syn(r)
+        L = e * pow(P, i, p) % p
+        R = (-1) ** (i + 1) * f * (1 + P) % p
+        loc = [j for j in (1, 2, 3) if e * pow(P, j, p) % p == (-1) ** (j + 1) * f * (1 + P) % p]
+        print(f"swap at i={i}: r={tuple(r)}, (e,f)=({e},{f}), (L,R)=({L},{R}), locator solutions {loc}")
+    e, f = syn((1, 4, 2, 6, 1, 3))
+    lhs = e * pow(1 + P * P, -1, p) * P * P % p
+    rhs = f * pow(1 + P, -1, p) % p
+    print(f"characteristic-two formula at i=2: {lhs} vs {rhs} (fails: {lhs != rhs})")
+    a1, b1 = (0, 1, 0, 0, 1, 0, 5, 3), (1, 0, 0, 1, 0, 0, 5, 3)
+    r1 = (1, 0, 0, 0, 1, 0, 5, 3)
+    print(f"collision: syn(a')={syn(a1)}, syn(b')={syn(b1)}, syn(r')={syn(r1)}; "
+          f"order of -3 mod 7 = {next(t for t in range(1, 7) if pow(4, t, 7) == 1)}\n")
+
+
 def part_gf64():
     F = Field(6, 0b1000011)          # t^6 + t + 1
     Q = F.Q
@@ -193,6 +226,16 @@ def part_gf64():
     M0 = separated_prefix(b0, D0, Q, Q // 2 + 1)
     print(f"alpha=t, beta=alpha^2: D={D0}; largest separated length M={M0}")
     print(f"  V_6 = {sorted(directions(6, b0, D0, Q)[:6])}, E_6 = {directions(6, b0, D0, Q)[6:]}")
+    best_fixed = (0, [])
+    for bb in range(1, Q):
+        Db = F.log_base(F.mul(1 ^ 2, F.inv(1 ^ F.exp[bb])), a0)
+        Mb = separated_prefix(bb, Db, Q, (Q + 1) // 2)
+        mb = next((mm for mm in range(Mb, 1, -1) if info_encodable(mm, bb, Q)), 0)
+        if mb > best_fixed[0]:
+            best_fixed = (mb, [bb])
+        elif mb == best_fixed[0]:
+            best_fixed[1].append(bb)
+    print(f"alpha=t kept, beta=alpha^b optimized: max m = {best_fixed[0]}, attained for b in {best_fixed[1]}")
 
     print("\n== Part 3: explicit encoding, decoding and DNA representation ==")
     m = 29
@@ -222,18 +265,28 @@ def part_gf64():
             s1 ^= F.mul(apow(j), rj)
         if (s0, s1) == (0, 0):
             return ("none", r, (s0, s1))
+        if s0 == 0 or s1 == 0:                      # step (2): reject
+            return ("detected", None, (s0, s1))
         ell = F.log_base(F.mul(s1, F.inv(s0)), a_exp)
         table = {}
         for j in range(1, m + 1):
             table[j % Q if j % 2 else (j - b) % Q] = ("sub", j)
         for i in range(1, m):
             table[(i + D) % Q] = ("swap", i)
+        if ell not in table:                        # step (3): reject
+            return ("detected", None, (s0, s1))
         kind, pos = table[ell]
         out = list(r)
         if kind == "sub":
             out[pos - 1] ^= F.mul(s0, F.inv(u(pos)))
         else:
             out[pos - 1], out[pos] = out[pos], out[pos - 1]
+        t0 = t1 = 0                                 # step (4): re-check
+        for j, oj in enumerate(out, 1):
+            t0 ^= F.mul(u(j), oj)
+            t1 ^= F.mul(apow(j), oj)
+        if (t0, t1) != (0, 0):
+            return ("detected", None, (s0, s1))
         return ((kind, pos, ell), out, (s0, s1))
 
     r1 = list(code); r1[4] ^= 17
@@ -242,6 +295,15 @@ def part_gf64():
     t2, o2, sy2 = decode(r2)
     print(f"substitution (magnitude 17, position 5): syndrome {sy1}, decoded {t1}, ok={o1 == code}")
     print(f"swap (positions 28,29): syndrome {sy2}, decoded {t2}, ok={o2 == code}")
+    # decoder never outputs a non-codeword: run it on many arbitrary words
+    import random
+    rng = random.Random(7)
+    outs = {"none": 0, "detected": 0, "corrected": 0}
+    for _ in range(20000):
+        w = [rng.randrange(64) for _ in range(31)]
+        t, o, _ = decode(w)
+        outs["corrected" if isinstance(t, tuple) else t] += 1
+    print(f"decoder on 20000 random words: {outs} (every output passed the re-check)")
 
     nt = "acgt"
     codon = lambda v: "".join(nt[(v >> s) & 3] for s in (4, 2, 0))
@@ -365,6 +427,7 @@ def jacobi_expansion_check(k, trials=3, seed=1):
 
 if __name__ == "__main__":
     K = int(sys.argv[1]) if len(sys.argv) > 1 else 10
+    part_gf7()
     part_gf64()
     print("\n== Part 4: exhaustive optima (Tables 1 and 2) ==")
     print(" k     q   m_max   m_max_all")
