@@ -1,3 +1,4 @@
+
 cff-version: 1.2.0
 message: "If you use these verification programs, please cite the software archive and the associated research paper."
 type: software
@@ -5,7 +6,8 @@ title: "Verification Programs for Two-Periodic Mixed-Error Codes over Finite Fie
 authors:
   - family-names: Aliasgari
     given-names: Malihe
-version: 1.0.0
+version: 1.0
+repository-code: "https://github.com/malihealiasgari20/Two-Periodic-Mixed-Error-Codes"
 license: MIT
 keywords:
   - coding theory
