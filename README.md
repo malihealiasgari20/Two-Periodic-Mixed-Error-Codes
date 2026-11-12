@@ -1,18 +1,51 @@
-# Reproducibility code for two-periodic mixed-error codes
+# Reproducibility Code for Two-Periodic Mixed-Error Codes
 
-These verification programs were developed by **Malihe Aliasgari** to support the manuscript **Adjacent-Transposition Syndromes and Sharp Length Bounds for Two-Periodic Mixed-Error Codes over Finite Fields**. The software authorship presented here is separate from the manuscript author list.
+**Software author:** Malihe Aliasgari  
+**Associated manuscript:** *Adjacent-Transposition Syndromes and Sharp Length Bounds for Two-Periodic Mixed-Error Codes over Finite Fields*
 
-**Requirements:** Python **3.8 or later**, standard library only; no external packages, datasets, or network access. The commands below use `python3` (use `python` if that is how Python 3 is installed on your computer). The indicated runtimes were observed with Python 3.13.5 in one reference environment; other computers may be slower or faster.
+This repository contains Python programs and saved output logs supporting the mathematical and computational results in the associated manuscript. The verification software was developed by **Malihe Aliasgari**. Software authorship is distinct from the authorship of the research manuscript.
 
-| Program | Manuscript results verified | Run | Typical reference runtime |
+## Research Visualizations
+
+### GF(64): separation of substitution and adjacent-transposition syndromes
+
+![GF(64) syndrome-direction separation](figures/GF64_Syndrome_Separation.png)
+
+*For the construction with* `alpha = t^2 + t + 1`, `beta = alpha^6`, *and 29 information symbols, all 57 allowed error directions are distinct: 29 substitution directions (blue), 28 adjacent-swap directions (orange), and six unused nonzero projective directions (gray). The two check symbols are assumed intact for this 29-information-symbol code.*
+
+### Computed optimal-length gaps for extension degrees 2–18
+
+![Computed optimal-length gaps for k = 2 through 18](figures/Computed_Optimal_Length_Gaps.png)
+
+*The bars show* `2^(k-1) - m_max(2^k)` *for the two-periodic family, as reported in Table 1. Here* `m_max` *is the maximum number of information symbols when the two check symbols are intact. The plotted values are computed optima for the specified family, not bounds for all possible error-correcting codes.*
+
+The image files belong in the repository's `figures/` folder under the exact filenames above. The plots will not display until those files are uploaded separately to GitHub.
+
+## Verification Programs
+
+**Requirements:** Python **3.8 or later**; Python standard library only. No external packages, datasets, or network connection are required.
+
+| Program | Manuscript results verified | Command | Reference runtime |
 | --- | --- | --- | --- |
-| `GF64_Sharp_Bound_Verification.py` | Theorem 5.2: sharp `m_max(64)=29`, 13 formal `(b,D)` cases and cyclotomic polynomial GCD certificates, 28-symbol even-length example. | `python3 GF64_Sharp_Bound_Verification.py` | ~1 second |
-| `Generalized_Two_Periodic_Bounds_Verification.py` | Table 1, `k=2,...,18`, using the short-exponent reduction in Lemma 5.3 to certify the maximum lengths. | `python3 Generalized_Two_Periodic_Bounds_Verification.py 18` | ~19 seconds |
-| `Two_Periodic_Exhaustive_Verification.py` | Tables 1 and 2 (default `k=2,...,10`; can extend to 12), Proposition 5.9, Lemma 4.1/Corollary 4.2 checks, `GF(64)` encoder/decoder/DNA examples, the `k>=29` numerical threshold, and a numerical check of Equation (30). | `python3 Two_Periodic_Exhaustive_Verification.py 10` | ~10 seconds |
+| `GF64_Sharp_Bound_Verification.py` | Theorem 5.2: sharp `m_max(64) = 29`, the 13 candidate `(b, D)` pairs and cyclotomic-polynomial GCD certificates, and the even-length construction. | `python3 GF64_Sharp_Bound_Verification.py` | Approximately 1 second |
+| `Generalized_Two_Periodic_Bounds_Verification.py` | Table 1 for `2 <= k <= 18`, using the short-exponent reduction from Lemma 5.3 for the larger fields. | `python3 Generalized_Two_Periodic_Bounds_Verification.py 18` | Approximately 19 seconds |
+| `Two_Periodic_Exhaustive_Verification.py` | Tables 1 and 2 through `k = 10` by default (optional `k = 12`), checks related to Proposition 5.9 and Lemma 4.1/Corollary 4.2, GF(64) encoding/decoding and codon examples, the `k >= 29` threshold, and a numerical check of Equation (30). | `python3 Two_Periodic_Exhaustive_Verification.py 10` | Approximately 10 seconds |
 
-## Saved results
+The runtimes above were observed under Python 3.13.5 in a reference environment and will vary by computer. On systems where Python 3 is invoked with `python`, replace `python3` accordingly.
 
-Text outputs from all three commands are in [`outputs/`](outputs/). Each ends with an `Elapsed:` line measured in the reference environment. To rerun a program and save new output, for example:
+For an extended exhaustive search through `k = 12`, run:
+
+```bash
+python3 Two_Periodic_Exhaustive_Verification.py 12
+```
+
+This extended run took approximately 96 seconds in the reference environment.
+
+## Saved Outputs
+
+The `outputs/` directory contains console logs from the three programs, plus the optional `k = 12` exhaustive run. Reviewers can compare their own results with these files.
+
+To rerun the programs and save output:
 
 ```bash
 python3 GF64_Sharp_Bound_Verification.py > outputs/GF64_Sharp_Bound_Verification.txt 2>&1
@@ -20,23 +53,42 @@ python3 Generalized_Two_Periodic_Bounds_Verification.py 18 > outputs/Generalized
 python3 Two_Periodic_Exhaustive_Verification.py 10 > outputs/Two_Periodic_Exhaustive_Verification.txt 2>&1
 ```
 
-An additional `outputs/Two_Periodic_Exhaustive_Verification_k12.txt` records `python3 Two_Periodic_Exhaustive_Verification.py 12`, which passed and took about 96 seconds in the reference environment. The original saved outputs include `/usr/bin/time` wall-clock durations; the above shell redirections do not automatically add timing lines. All code aborts with an assertion or error if an explicitly asserted verification fails.
+The provided output logs also record measured elapsed times. Ordinary shell redirection does not add timing lines automatically.
 
-## Scope and precision
+## Computational Scope and Precision
 
-- The **GF(64)** certificate and finite-field searches use exact binary-polynomial arithmetic. No randomization or floating-point approximation enters these code-length results.
-- The **generalized** script relies on the *proved* short-exponent restriction of Lemma 5.3 for the large-field search; it is not an unrestricted search through all exponents or codewords at `k=18`.
-- The **exhaustive** script enumerates primitive-field elements up to Frobenius conjugacy, all admissible alternating weights, and all candidate lengths (using the monotonicity of direction separation). It tests the equality in Proposition 5.9 for finite degrees, rather than replacing its mathematical proof.
-- The **Jacobi-sum check** (Part 7) uses deterministic seeded pseudorandom sets and floating-point complex values. This is a numerical spot-check of the corrected conjugated character identity, **not** an exact verification of the general character-sum lower-bound theorem.
-- The **threshold check** (Part 6) evaluates the explicit real-valued inequality numerically for `k=26,...,32`; its general mathematical justification belongs to the manuscript.
-- References to **Theorem 5.2**, **Lemma 5.3**, **Proposition 5.9**, **Tables 1 and 2**, and **Equation (30)** correspond to the 26-page preview manuscript dated November 2026. Recheck numbering after the final MDPI-template compilation.
+- The GF(64) sharp-bound certificates and finite-field searches use **exact binary-polynomial arithmetic**, without randomized or floating-point computation.
+- The generalized program uses the **proved short-exponent restriction in Lemma 5.3**. Its calculation through `k = 18` is not an unrestricted enumeration of all field parameters and lengths.
+- The exhaustive program enumerates primitive elements up to Frobenius conjugacy, admissible two-periodic parameters, and candidate lengths. Its checks of **Proposition 5.9** are computational corroboration, not a replacement for the proof.
+- The **Equation (30)** check uses deterministically seeded pseudorandom subsets and floating-point complex arithmetic. It is a numerical spot-check of the conjugated-character identity, **not** a proof of the asymptotic character-sum estimate.
+- The threshold check evaluates the displayed inequality numerically for `k = 26, ..., 32`; the general threshold claim is justified in the manuscript.
+- Result numbers correspond to the **26-page November 2026 manuscript preview** and should be checked again if the final journal layout changes theorem, table, or equation numbering.
 
-## Citation and archiving
+## Repository Contents
 
-The files in this folder are software and output logs only; the manuscript's `.tex` and PDF, editing scripts, and Python cache files are intentionally excluded.
+```text
+GF64_Sharp_Bound_Verification.py
+Generalized_Two_Periodic_Bounds_Verification.py
+Two_Periodic_Exhaustive_Verification.py
+README.md
+LICENSE
+CITATION.cff
+SHA256SUMS
+outputs/
+figures/
+    GF64_Syndrome_Separation.png
+    Computed_Optimal_Length_Gaps.png
+```
 
-To obtain a permanent software DOI, publish the folder as a public GitHub repository, enable Zenodo's GitHub integration for that repository, and create a GitHub release (for example, `v1.0.0`). Add the GitHub URL and minted Zenodo DOI to the manuscript's Data Availability Statement **after they exist**. `CITATION.cff` can then be updated with the published software DOI.
+The repository is intended for verification software, figures, and saved results; the manuscript PDF, manuscript LaTeX source, temporary editing scripts, and cache folders are excluded.
+
+## Citation and Archiving
+
+Please cite the archived software release when reusing the verification code. The software author is **Malihe Aliasgari**. The `CITATION.cff` file records the software citation metadata.
+
+Once the repository is public and the verified files are present, a GitHub release (for example, `v1.0.0`) can be archived through Zenodo. Add the resulting repository URL and **actual minted DOI** to the manuscript's Data Availability Statement. Do not insert a DOI before one has been issued.
 
 ## License
 
-MIT License; see [LICENSE](LICENSE).
+MIT License; see [`LICENSE`](LICENSE).  
+Copyright (c) 2026 Malihe Aliasgari.
